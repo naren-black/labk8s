@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go version *)",
+      "Bash(multipass version *)",
+      "Bash(docker --version)",
+      "Bash(kubectl version *)",
+      "Bash(brew --version)",
+      "Bash(go vet *)",
+      "Bash(go run *)",
+      "Bash(go test *)",
+      "Bash(rm /Users/naren/Projects/labk8s/00-go-refresher/01-syntax-basics/exercises.go /Users/naren/Projects/labk8s/00-go-refresher/01-syntax-basics/exercises_test.go)",
+      "Bash(rmdir /Users/naren/Projects/labk8s/00-go-refresher/01-syntax-basics)",
+      "Bash(multipass list *)",
+      "Bash(multipass find *)",
+      "Bash(multipass exec *)"
+    ]
+  }
+}
