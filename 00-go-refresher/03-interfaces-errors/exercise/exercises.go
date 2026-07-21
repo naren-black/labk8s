@@ -11,7 +11,10 @@ import (
 // by identity (with errors.Is), not by string message.
 //
 // TODO: declare it with errors.New("container not found").
-var ErrContainerNotFound error
+
+
+var ErrContainerNotFound = errors.New("container not found")
+
 
 // ContainerDefinition mirrors earlier lessons.
 type ContainerDefinition struct {
@@ -33,8 +36,13 @@ type Workload struct {
 //
 // Use %w (not %v) so callers can still errors.Is() against ErrContainerNotFound
 // even though your message adds extra context.
-func (w *Workload) FindContainer(name string) (ContainerDefinition, error) {
-	panic("TODO: implement FindContainer")
+func (w *Workload) FindContainer(name string) (ContainerDefinition	, error) {
+	for _, container := range w.Containers {
+		if container.Name == name {
+			return container, nil
+		}
+	}
+	return ContainerDefinition{}, fmt.Errorf("workload %s: %w", w.Name, ErrContainerNotFound)
 }
 
 // InvalidImageError is a CUSTOM error TYPE (not a sentinel) - it carries
@@ -46,11 +54,12 @@ func (w *Workload) FindContainer(name string) (ContainerDefinition, error) {
 //
 //	fmt.Sprintf("container %s has invalid image %q", e.Container, e.Image)
 type InvalidImageError struct {
-	// TODO: add fields
+	Container string
+	Image string
 }
 
 func (e *InvalidImageError) Error() string {
-	panic("TODO: implement Error")
+	return fmt.Sprintf("container %s has invalid image %q", e.Container, e.Image)
 }
 
 // SetContainerImage validates newImage is non-empty, then updates the named
@@ -65,7 +74,19 @@ func (e *InvalidImageError) Error() string {
 //     range-loop-copy gotcha from Lesson 2 - you need index-based mutation,
 //     not a copy of the loop variable) and return nil.
 func (w *Workload) SetContainerImage(name, newImage string) error {
-	panic("TODO: implement SetContainerImage")
+	if newImage == "" {
+		return &InvalidImageError{Container: name, Image: newImage}
+	}
+	ctrDef, err := w.FindContainer(name)
+	if err != nil {
+		return err
+	}
+	for idx, container := range w.Containers {
+		if container.Name == ctrDef.Name {
+			w.Containers[idx].Image = newImage
+		}
+	}
+	return nil
 }
 
 // Validator is an interface with ONE method. Any type - including ones you
@@ -80,7 +101,10 @@ type Validator interface {
 // containers - return a plain error (fmt.Errorf or errors.New) in that case,
 // nil otherwise.
 func (w *Workload) Validate() error {
-	panic("TODO: implement Validate")
+	if len(w.Containers) == 0 {
+		return errors.New("workload has no containers")
+	}
+	return nil
 }
 
 var _ = errors.New

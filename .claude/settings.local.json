@@ -13,7 +13,8 @@
       "Bash(rmdir /Users/naren/Projects/labk8s/00-go-refresher/01-syntax-basics)",
       "Bash(multipass list *)",
       "Bash(multipass find *)",
-      "Bash(multipass exec *)"
+      "Bash(multipass exec *)",
+      "Bash(go build *)"
     ]
   }
 }
